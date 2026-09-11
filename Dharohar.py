@@ -2,41 +2,35 @@ import streamlit as st
 import pandas as pd
 import os
 import random
+from pathlib import Path
+
+IMAGE_DIR = Path("images")
+
 
 # ============================================================
 # PAGE CONFIGURATION
 # ============================================================
+
 st.set_page_config(
-    page_title="Valencia - Smart Travel Assistant",
-    page_icon="✈️",
+    page_title="DHAROHAR - Smart Travel Assistant",
+    page_icon="🪷",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for enhanced aesthetics
-st.markdown("""
-<style>
-    .main-header {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #0D9488;
-        margin-bottom: 0rem;
-    }
-    .sub-header {
-        font-size: 1.1rem;
-        color: #64748B;
-        margin-bottom: 2rem;
-    }
-    .card {
-        background-color: #FFFFFF;
-        padding: 1.5rem;
-        border-radius: 10px;
-        border: 1px solid #E2E8F0;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1rem;
-    }
-</style>
-""", unsafe_allow_html=True)
+
+# ============================================================
+# LOAD CSS
+# ============================================================
+
+def load_css():
+    with open("style.css") as f:
+        st.markdown(
+            f"<style>{f.read()}</style>",
+            unsafe_allow_html=True
+        )
+
+load_css()
 
 # ============================================================
 # FILES & SAMPLE DATA
@@ -54,6 +48,15 @@ hotel_data = [
     {"name": "Backpackers Hub", "city": "Amritsar", "type": "Hostel", "price": 900, "purpose": "Recreation", "hospitality": 4, "food": 3, "view": 3, "cleanliness": 4, "location": 5},
     {"name": "Heritage View Hotel", "city": "Amritsar", "type": "Hotel", "price": 2200, "purpose": "Education", "hospitality": 5, "food": 4, "view": 5, "cleanliness": 5, "location": 4}
 ]
+hotel_images = {
+    "Golden Heritage Hotel": "goldenheritagehoetel.jpg",
+    "Punjab Palace Resort": "images/hotel2.jpg",
+    "Seva Dharamshala": "dharamshala.jpg",
+    "Amritsar Homestay": "images/hotel1.jpg",
+    "City Business Inn": "images/hotel2.jpg",
+    "Backpackers Hub": "images/hotel3.jpg",
+    "Heritage View Hotel": "hotelheritageview.jpg",
+}
 
 place_data = [
     {"name": "Golden Temple", "city": "Amritsar", "category": "Religious", "description": "The famous spiritual centre of Amritsar."},
@@ -124,7 +127,7 @@ def calculate_recommendations(destination, budget_value, stay_type, purpose, pri
 # ============================================================
 # NAVIGATION & SIDEBAR
 # ============================================================
-st.sidebar.title("✈️ Valencia Navigation")
+st.sidebar.markdown('<div class="sidebar-brand">🪷 <span>DHAROHAR</span></div>', unsafe_allow_html=True)
 page_choice = st.sidebar.radio(
     "Go to",
     ["🗺️ Home & Plan Trip", "🏨 Register Hotel", "🧠 Culture Quiz", "ℹ️ About"],
@@ -142,8 +145,13 @@ language = st.sidebar.selectbox("🌐 Language / भाषा", ["🇬🇧 Engli
 # PAGE 1: HOME & PLAN MY TRIP
 # ============================================================
 if st.session_state.page == "🗺️ Home & Plan Trip":
-    st.markdown('<p class="main-header">✈️ Valencia - Travel Assistant</p>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-header">Plan your journey customized to YOUR exact preferences.</p>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="hero">
+        <div class="hero-kicker">SMART TRAVEL ASSISTANT</div>
+        <div class="main-header">🪷 DHAROHAR</div>
+        <div class="sub-header">Discover India beyond the map.</div>
+    </div>
+    """, unsafe_allow_html=True)
 
     col1, col2 = st.columns([1, 1], gap="large")
 
@@ -170,6 +178,10 @@ if st.session_state.page == "🗺️ Home & Plan Trip":
             else:
                 for rank, (index, score) in enumerate(scores[:3], start=1):
                     hotel = filtered.loc[index]
+                    image_path = hotel_images.get(
+    hotel["name"],
+    "images/hotel1.jpg"
+)
                     percentage = min(int(score), 100)
 
                     with st.container():
@@ -202,7 +214,7 @@ if st.session_state.page == "🗺️ Home & Plan Trip":
 # ============================================================
 elif st.session_state.page == "🏨 Register Hotel":
     st.markdown('<p class="main-header">🏨 Property Registration</p>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-header">List your hotel, resort, or homestay on Valencia.</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sub-header">List your hotel, resort, or homestay on DHAROHAR.</p>', unsafe_allow_html=True)
 
     with st.form("hotel_reg_form"):
         col1, col2 = st.columns(2)
@@ -275,10 +287,10 @@ elif st.session_state.page == "🧠 Culture Quiz":
 # PAGE 4: ABOUT
 # ============================================================
 elif st.session_state.page == "ℹ️ About":
-    st.markdown('<p class="main-header">ℹ️ About Valencia</p>', unsafe_allow_html=True)
+    st.markdown('<p class="main-header">ℹ️ About DHAROHAR</p>', unsafe_allow_html=True)
 
     st.info("""
-    **Valencia** is a smart travel assistant designed to make travelling personal and meaningful.
+    **DHAROHAR** is a smart travel assistant designed to make travelling personal and meaningful.
     
     It considers:
     * 💰 **Budget & Rates**
