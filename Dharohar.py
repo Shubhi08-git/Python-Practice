@@ -49,13 +49,13 @@ hotel_data = [
     {"name": "Heritage View Hotel", "city": "Amritsar", "type": "Hotel", "price": 2200, "purpose": "Education", "hospitality": 5, "food": 4, "view": 5, "cleanliness": 5, "location": 4}
 ]
 hotel_images = {
-    "Golden Heritage Hotel": "goldenheritagehoetel.jpg",
+    "Golden Heritage Hotel": "images/goldenheritagehotel.jpg",
     "Punjab Palace Resort": "images/hotel2.jpg",
-    "Seva Dharamshala": "dharamshala.jpg",
+    "Seva Dharamshala": "images/dharamshala.jpg",
     "Amritsar Homestay": "images/hotel1.jpg",
     "City Business Inn": "images/hotel2.jpg",
     "Backpackers Hub": "images/hotel3.jpg",
-    "Heritage View Hotel": "hotelheritageview.jpg",
+    "Heritage View Hotel": "images/hotelheritageview.jpg",
 }
 
 place_data = [
@@ -179,22 +179,58 @@ if st.session_state.page == "🗺️ Home & Plan Trip":
                 for rank, (index, score) in enumerate(scores[:3], start=1):
                     hotel = filtered.loc[index]
                     image_path = hotel_images.get(
-    hotel["name"],
-    "images/hotel1.jpg"
-)
+                        hotel["name"],
+                        "images/hotel1.jpg"
+                    )
+                    st.write("IMAGE PATH:", image_path)
+                    st.write("EXISTS:", os.path.exists(image_path))  
                     percentage = min(int(score), 100)
 
                     with st.container():
-                        st.markdown(f"#### {rank}. {hotel['name']}")
+
+                        # Hotel image
+                        if os.path.exists(image_path):
+                             st.image(
+                             image_path,
+                             use_container_width=True
+                            )
+
+                        # Hotel name
+                        st.markdown(
+                                f"### {rank}. {hotel['name']}"
+                            )
+
+                        # Main information
                         c1, c2, c3 = st.columns(3)
-                        c1.metric("Match Score", f"{percentage}%")
-                        c2.metric("Price", f"₹{hotel['price']}/night")
-                        c3.metric("Type", hotel['type'])
 
-                        st.progress(percentage / 100)
-                        st.caption(f"📍 Location: {hotel['location']}/5 | ⭐ Hospitality: {hotel['hospitality']}/5 | 🍴 Food: {hotel['food']}/5")
+                        c1.metric(
+                            "Match Score",
+                            f"{percentage}%"
+                        )
+
+                        c2.metric(
+                            "Price",
+                            f"₹{hotel['price']}/night"
+                        )
+
+                        c3.metric(
+                            "Type",
+                            hotel["type"]
+                        )
+
+                        # Match progress
+                        st.progress(
+                            percentage / 100
+                        )
+
+                        # Ratings
+                        st.caption(
+                            f"📍 Location: {hotel['location']}/5  |  "
+                            f"⭐ Hospitality: {hotel['hospitality']}/5  |  "
+                            f"🍴 Food: {hotel['food']}/5"
+                        )
+
                         st.divider()
-
                 st.subheader("📍 Places You May Like")
                 matching_places = places[
                     (places["city"].str.lower() == destination.lower()) &
